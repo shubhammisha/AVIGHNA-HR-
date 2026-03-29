@@ -25,4 +25,14 @@ export const candidateApi = {
   },
 };
 
+export const interviewApi = {
+  getQuestions: (jdText: string, cvText: string) => 
+    apiClient.post('/interview/generate-questions', { jd_text: jdText, cv_text: cvText }),
+};
+
+export const psychometricApi = {
+  analyze: (responses: any) => 
+    apiClient.post('/psychometric/analyze', responses),
+};
+
 export default apiClient;

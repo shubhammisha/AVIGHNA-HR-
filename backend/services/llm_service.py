@@ -35,7 +35,7 @@ class LLMService:
                 response = await target_model.generate_content_async(prompt)
                 return response.text
             elif "llama" in model or "mixtral" in model or (model == "groq" and hasattr(self, 'groq_client')):
-                real_model = model if model != "groq" else "llama-3.3-70b-versatile"
+                real_model = model if model != "groq" else "llama-3.1-8b-instant"
                 chat_completion = await self.groq_client.chat.completions.create(
                     messages=[{"role": "user", "content": prompt}],
                     model=real_model,
