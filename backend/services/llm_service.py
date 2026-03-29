@@ -23,7 +23,7 @@ class LLMService:
         if groq_key:
             self.groq_client = AsyncGroq(api_key=groq_key)
 
-    async def generate_response(self, prompt: str, model: str = "llama-3.3-70b-specdec") -> str:
+    async def generate_response(self, prompt: str, model: str = "llama-3.3-70b-versatile") -> str:
         """Generic method to generate response from Groq."""
         try:
             if not self.groq_client:
