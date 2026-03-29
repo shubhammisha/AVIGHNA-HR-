@@ -95,3 +95,5 @@ yarl==1.22.0
 email-validator
 groq
 qdrant-client
+python-docx
+pymupdf
