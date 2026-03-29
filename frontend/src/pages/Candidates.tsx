@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Upload, FileText, CheckCircle, AlertCircle, BarChart3, Target, Zap, ChevronRight, Search, Activity } from 'lucide-react';
+import { Upload, CheckCircle, BarChart3, Target, Zap, ChevronRight, Search, Activity } from 'lucide-react';
 import { candidateApi } from '../api/client';
 
 const Candidates = () => {

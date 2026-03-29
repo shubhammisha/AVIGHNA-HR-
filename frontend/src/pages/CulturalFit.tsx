@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Shield, Target, Zap, Cpu, Award, Info, Dna, MessageCircle, Activity } from 'lucide-react';
+import { Target, Zap, Cpu, Info, Dna, MessageCircle, Activity } from 'lucide-react';
 
 const MetricBar = ({ label, value, delay }: { label: string, value: number, delay: number }) => (
   <div className="space-y-2">

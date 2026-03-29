@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Mic, MicOff, CheckCircle2, AlertCircle, ListChecks, Terminal, Play, ShieldCheck, Brain } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { CheckCircle2, Terminal, Play, ShieldCheck, Brain } from 'lucide-react';
 
 const InterviewCopilot = () => {
   const [isRecording, setIsRecording] = useState(false);

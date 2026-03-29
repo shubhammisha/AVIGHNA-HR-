@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { Users, ArrowUpRight, Activity, ClipboardCheck, Zap, BarChart3 } from 'lucide-react';
+import { Users, ClipboardCheck, Zap, BarChart3 } from 'lucide-react';
 
 const StatCard = ({ label, value, icon: Icon, trend }: { label: string, value: string, icon: any, trend: string }) => (
   <motion.div
