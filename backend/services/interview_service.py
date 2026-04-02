@@ -1,4 +1,5 @@
 import os
+import json
 from groq import Groq
 from typing import List, Dict, Any, Optional
 from services.llm_service import llm_service
@@ -49,9 +50,68 @@ class InterviewService:
             "technical_score": 0
         }}
         """
-        response = await llm_service.generate_response(prompt, model="gemini-1.5-pro")
+        response = await llm_service.generate_response(prompt, model="llama-3.3-70b-versatile")
         return {
             "raw_analysis": response
         }
+
+    async def extract_entities(self, text: str) -> List[Dict[str, str]]:
+        """Extract names and companies from a transcript segment using Groq."""
+        prompt = f"""
+        TASK: Extract any mentioned colleagues, former coworkers, or professional contacts from the following interview transcript snippet.
+        
+        TRANSCRIPT:
+        {text}
+        
+        OUTPUT FORMAT (JSON List):
+        [
+            {{"name": "Full Name", "company": "Company Name", "role": "Full Role Description"}}
+        ]
+        
+        RULES:
+        1. Only include REAL PEOPLE mentioned.
+        2. If company is not mentioned, guess it from context or use your knowledge.
+        3. Keep it empty [] if no names are found. Output ONLY the JSON list.
+        """
+        response = await llm_service.generate_response(prompt, model="llama-3.3-70b-versatile")
+        try:
+            import json, re
+            match = re.search(r'\[.*\]', response, re.DOTALL)
+            if match:
+                return json.loads(match.group(0))
+            return []
+        except:
+            return []
+
+    async def search_linkedin_profiles(self, name: str, company: str) -> List[Dict[str, Any]]:
+        """Search for LinkedIn profiles using Serper.dev."""
+        serper_key = os.getenv("SERPER_API_KEY")
+        if not serper_key:
+            return []
+        
+        import requests
+        url = "https://google.serper.dev/search"
+        # Search for Name + Company on LinkedIn
+        query = f'site:linkedin.com/in "{name}" {company}'
+        payload = json.dumps({"q": query})
+        headers = {
+            'X-API-KEY': serper_key,
+            'Content-Type': 'application/json'
+        }
+        
+        try:
+            response = requests.request("POST", url, headers=headers, data=payload)
+            results = response.json().get("organic", [])
+            matches = []
+            for res in results[:2]: # Top 2 matches
+                matches.append({
+                    "title": res.get("title"),
+                    "link": res.get("link"),
+                    "snippet": res.get("snippet")
+                })
+            return matches
+        except Exception as e:
+            print(f"Serper error: {e}")
+            return []
 
 interview_service = InterviewService()

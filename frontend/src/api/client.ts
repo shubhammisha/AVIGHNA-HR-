@@ -15,9 +15,11 @@ export const jdApi = {
 };
 
 export const candidateApi = {
-  uploadCv: (file: File, jdText?: string) => {
+  uploadCv: (files: File[], jdText?: string) => {
     const formData = new FormData();
-    formData.append('file', file);
+    files.forEach(file => {
+      formData.append('files', file);
+    });
     if (jdText) formData.append('jd_text', jdText);
     return apiClient.post('/candidates/upload-cv', formData, {
       headers: { 'Content-Type': 'multipart/form-data' },

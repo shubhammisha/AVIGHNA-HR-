@@ -7,14 +7,17 @@ router = APIRouter(prefix="/interview", tags=["Interview Copilot"])
 @router.post("/transcribe")
 async def transcribe(file: UploadFile = File(...)):
     """Transcribe interview audio."""
+    print(f">>> [DEBUG] Received audio chunk: {file.filename}")
     temp_path = f"/tmp/{file.filename}"
     with open(temp_path, "wb") as f:
         f.write(await file.read())
     
     try:
         transcript = await interview_service.transcribe_audio(temp_path)
+        print(f">>> [DEBUG] Transcript: {transcript[:100]}...")
         return {"transcript": transcript}
     except Exception as e:
+        print(f">>> [DEBUG] Transcription Error: {e}")
         raise HTTPException(status_code=500, detail=str(e))
     finally:
         import os
@@ -29,3 +32,22 @@ async def analyze(transcript: str, must_ask: List[str]):
         return {"analysis": analysis}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+@router.post("/analyze-stream")
+async def analyze_stream(text: str):
+    """Real-time entity extraction and LinkedIn matching."""
+    print(f">>> [DEBUG] Analyzing stream text: {text[:50]}...")
+    entities = await interview_service.extract_entities(text)
+    print(f">>> [DEBUG] Extracted entities: {entities}")
+    enriched_entities = []
+    
+    for ent in entities:
+        if ent.get("name"):
+            print(f">>> [DEBUG] Searching LinkedIn for: {ent['name']} @ {ent.get('company')}")
+            matches = await interview_service.search_linkedin_profiles(ent["name"], ent.get("company", ""))
+            print(f">>> [DEBUG] Matches found: {len(matches)}")
+            enriched_entities.append({
+                "entity": ent,
+                "matches": matches
+            })
+            
+    return {"entities": enriched_entities}

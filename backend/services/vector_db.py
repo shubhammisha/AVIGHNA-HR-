@@ -13,11 +13,15 @@ class VectorService:
         self.client = QdrantClient(path=db_path) 
         self.collection_name = "candidates"
         
-        # Initialize collection
-        self.client.recreate_collection(
-            collection_name=self.collection_name,
-            vectors_config=VectorParams(size=768, distance=Distance.COSINE),
-        )
+        # Initialize collection if not exists (3072 dims for OpenAI Large)
+        collections = self.client.get_collections().collections
+        exists = any(c.name == self.collection_name for c in collections)
+        
+        if not exists:
+            self.client.create_collection(
+                collection_name=self.collection_name,
+                vectors_config=VectorParams(size=3072, distance=Distance.COSINE),
+            )
 
     async def add_candidate(self, candidate_id: str, vector: List[float], payload: Dict[str, Any]):
         self.client.upsert(
