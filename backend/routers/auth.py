@@ -8,8 +8,8 @@ from typing import Optional
 import os
 from pydantic import BaseModel, EmailStr
 
-from ..models.database import get_db
-from ..models.user import User
+from models.database import get_db
+from models.user import User
 
 # Configuration
 SECRET_KEY = os.getenv("JWT_SECRET", "supersecretkey")
