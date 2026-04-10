@@ -22,7 +22,14 @@ try:
     import routers.candidate as candidate
     import routers.interview as interview
     import routers.psychometric as psychometric
+    import routers.auth as auth
+    from models.database import engine, Base
+    import models.user as user_model
     print(">>> [DEBUG] ROUTERS IMPORTED")
+
+    # Create Database Tables
+    Base.metadata.create_all(bind=engine)
+    print(">>> [DEBUG] DATABASE TABLES CREATED")
 
     app = FastAPI(title="AI-Powered TA Module API")
     print(">>> [DEBUG] APP INSTANCE CREATED")
@@ -42,6 +49,7 @@ try:
     app.include_router(candidate.router)
     app.include_router(interview.router)
     app.include_router(psychometric.router)
+    app.include_router(auth.router)
     print(">>> [DEBUG] ALL ROUTERS INCLUDED")
 
     @app.get("/")

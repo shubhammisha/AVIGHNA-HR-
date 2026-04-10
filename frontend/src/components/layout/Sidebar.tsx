@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { NavLink } from 'react-router-dom';
-import { Home, Users, MessageSquare, ClipboardCheck, LayoutDashboard, Settings, Menu, X, BarChart3 } from 'lucide-react';
+import { Home, Users, MessageSquare, ClipboardCheck, LayoutDashboard, Settings, Menu, X, BarChart3, LogOut } from 'lucide-react';
+import { useAuth } from '../../context/AuthContext';
 import type { LucideIcon } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -30,6 +31,7 @@ const NavItem = ({ to, icon: Icon, label, onClick }: NavItemProps) => (
 
 const Sidebar = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const { logout } = useAuth();
 
   return (
     <>
@@ -72,8 +74,18 @@ const Sidebar = () => {
           <NavItem to="/interview" icon={MessageSquare} label="Copilot" onClick={() => setIsOpen(false)} />
           <NavItem to="/cultural-fit" icon={Home} label="Culture" onClick={() => setIsOpen(false)} />
           <NavItem to="/kpi" icon={BarChart3} label="KPI" onClick={() => setIsOpen(false)} />
-          <div className="mt-8 pt-8 border-t border-border">
+          <div className="mt-8 pt-8 border-t border-border flex flex-col gap-2">
             <NavItem to="/settings" icon={Settings} label="Settings" onClick={() => setIsOpen(false)} />
+            <button
+              onClick={() => {
+                logout();
+                setIsOpen(false);
+              }}
+              className="flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 group text-red-400 hover:text-red-300 hover:bg-red-500/10 w-full text-left"
+            >
+              <LogOut size={20} className="transition-transform group-hover:scale-110" />
+              <span className="font-mono text-[12px] uppercase tracking-widest">Logout</span>
+            </button>
           </div>
         </nav>
         

@@ -9,6 +9,27 @@ const apiClient = axios.create({
   },
 });
 
+// Add a request interceptor to inject the JWT token
+apiClient.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
+
+export const authApi = {
+  login: (formData: FormData) => apiClient.post('/auth/login', formData, {
+    headers: { 'Content-Type': 'multipart/form-data' }
+  }),
+  register: (data: any) => apiClient.post('/auth/register', data),
+};
+
 export const jdApi = {
   refine: (rawRequirements: string) => 
     apiClient.post('/jd/refine', null, { params: { raw_requirements: rawRequirements } }),
